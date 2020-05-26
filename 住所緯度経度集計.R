@@ -32,4 +32,4 @@ par(family="HiraKakuProN-W3")
 plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
 
 #店舗をプロット(円の大きさは店舗数)
-points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.3)
+points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.1)
