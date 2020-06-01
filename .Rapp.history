@@ -5,35 +5,69 @@ install.packages("sf")
 install.packages("RColorBrewer")
 install.packages("classInt")
 install.packages("RMeCab")
+library(dplyr)#
+library(sf)#
+library(readr)#
+library(RColorBrewer)#
+library(classInt)#
 setwd("~/Desktop/飲食店喫茶店")
-data <- read.csv("住所緯度経度.csv", fileEncoding="CP932")
-str(data)
-dataA <- aggregate(x=data$住所, by=list(data$住所), FUN=length, na.rm=TRUE)
-dataA <- aggregate(x=data[,-1], by=list(data$住所), FUN=length)
-dataA
-str(dataA)
-dataA <- aggregate(x=data[,-1], by=list(data$住所, data$緯度, data$経度), FUN=length)
-str(dataA)
-head(dataA)
-dataA <- aggregate(x=list(data$住所,data$緯度,data$経度), by=list(data$住所, data$緯度, data$経度), FUN=length)
-str(dataA)
-dataA <- aggregate(x=data, by=list(data$住所, data$緯度, data$経度), FUN=length)
-str(dataA)
-head(dataA)
-dataA <- aggregate(x=data, by=list(data$住所), FUN=length)
-str(dataA)
-head(dataA)
-dataA <- aggregate(x=data[,-2], by=list(data$住所, data$緯度, data$経度), FUN=length)
-str(dataA)
-head(dataA)
-dataA <- aggregate(x=data$住所, by=list(data$住所, data$緯度, data$経度), FUN=length)
-head(dataA)
-dataA <- dataA %>% rename(住所=Group.1, 緯度=Group.2, 経度=Group.3, 店舗数=x)
-library(dplyr)
-dataA <- dataA %>% rename(住所=Group.1, 緯度=Group.2, 経度=Group.3, 店舗数=x)
-str(dataA)
-head(dataA)
-dataA <- aggregate(x=data$緯度, by=list(data$緯度, data$経度), FUN=length)
-head(dataA)
+data <- read.csv("住所緯度経度.csv", fileEncoding="CP932")#
+#同一緯度経度で、店舗数を計算#
+dataA <- aggregate(x=data$緯度, by=list(data$緯度, data$経度), FUN=length)#
+#カラム名変更#
 dataA <- dataA %>% rename(緯度=Group.1, 経度=Group.2, 店舗数=x)
-head(dataA)
+shape <- st_read("h27_did_27.shp") #eStatから大阪府を取得#
+#描画#
+par(family="HiraKakuProN-W3")#
+#区境#
+plot(shape[1:24,4], col=1, main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
+plot(shape[1:24,4], main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
+plot(shape[1:24,4], col=white, main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
+plot(shape[1:24,4], col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
+plot(dataA$緯度, dataA$経度, col=2, pch=19, cex=dataA$店舗数)
+plot(dataA$緯度, dataA$経度, col=2, pch=19, cex=1)
+plot(dataA$経度, dataA$緯度, col=2, pch=19, cex=1)
+plot(dataA$経度, dataA$緯度, col=2, pch=19, cex=0.3)
+plot(shape[1:24,4], col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+par(new=T)#
+plot(dataA$経度, dataA$緯度, col=2, pch=19, cex=0.3)
+plot(shape[1:24,4], xlim=c(135.0913,135.7466), ylim=c(34.27182,35.05129), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+par(new=T)#
+plot(dataA$経度, dataA$緯度, xlim=c(135.0913,135.7466), ylim=c(34.27182,35.05129), col=2, pch=19, cex=0.3)
+plot(st_geometry(shape[1:24,4]), xlim=c(135.0913,135.7466), ylim=c(34.27182,35.05129), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+par(new=T)#
+plot(dataA$経度, dataA$緯度, xlim=c(135.0913,135.7466), ylim=c(34.27182,35.05129), col=2, pch=19, cex=0.3)
+plot(st_geometry(shape[1:24,4]), xlim=c(135.0913,135.7466), ylim=c(34.27182,35.05129), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")
+points(dataA$経度, dataA$緯度, pch=16, col="red")
+summary(dataA$経度)
+summary(dataA$緯度)
+plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+points(dataA$経度, dataA$緯度, pch=16, col="red")
+#区境 xlimとylimをshapeと合わせないとずれる#
+plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.3)
+str(dataA)
+str(data)
+data0 <- read.csv("飲食店喫茶店マスター.csv", fileEncoding="CP932")
+str(data0)
+data0$営業所名称
+order(data0$営業所名称)
+sort(data0$営業所名称)
+par(family="HiraKakuProN-W3")#
+#区境 xlimとylimをshapeと合わせないとずれる#
+plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.1)
+plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.2)
+par(family="HiraKakuProN-W3")#
+#区境 xlimとylimをshapeと合わせないとずれる#
+plot(st_geometry(shape[1:24,4]), xlim=c(135.4,135.6), ylim=c(34.59,34.77), col="white", main="食品営業許可施設（飲食店、喫茶店）　令和元年12月27日現在")#
+#店舗をプロット(円の大きさは店舗数)#
+points(dataA$経度, dataA$緯度, pch=16, col="red", cex=0.1)
